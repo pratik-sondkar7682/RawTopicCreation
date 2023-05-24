@@ -17,12 +17,14 @@ driver.switch_to.new_window('tab')
 # Load the webpage
 driver.get("https://tutor-plus-cms.tllms.com/neo_courses")
 driver.find_element(By.XPATH,'//*[@id="root"]/div/div/a/span[1]').click()
-driver.find_element(By.ID, 'email').send_keys('pratik.sondkar@byjus.com')
+email = input("Enter your email ID: ")
+driver.find_element(By.ID, 'email').send_keys(email)
 driver.find_element(By.XPATH, '//*[@id="signInForm"]/div[3]/button').click()
-driver.find_element(By.XPATH,'//*[@id="identifierId"]').send_keys('pratik.sondkar@byjus.com')
+driver.find_element(By.XPATH,'//*[@id="identifierId"]').send_keys(email)
 driver.find_element(By.XPATH,'//*[@id="identifierNext"]/div/button/span').click()
 time.sleep(5)
-driver.find_element(By.XPATH,'//*[@id="password"]/div[1]/div/div[1]/input').send_keys('Pratik@7682')
+password = input("Enter your password: ")
+driver.find_element(By.XPATH,'//*[@id="password"]/div[1]/div/div[1]/input').send_keys(password)
 driver.find_element(By.XPATH,'//*[@id="passwordNext"]/div/button/span').click()
 time.sleep(8)
 
@@ -61,8 +63,10 @@ while row < len(df):
             break
 
     # Chapter Addition
-
-    chap_loc = driver.find_element(By.CSS_SELECTOR,'input[placeholder="Enter Chapter"]').send_keys(df['Chapter Name'][row])
+    if df['Class Type'][row] == 'Regular Session':
+        chap_loc = driver.find_element(By.CSS_SELECTOR,'input[placeholder="Enter Chapter"]').send_keys(df['Chapter Name'][row])
+    elif df['Class Type'][row] == 'Monthly Test Session':
+        pass
 
     #Grade Addition
 
@@ -90,6 +94,8 @@ while row < len(df):
     #Publishing the RT ID
 
     driver.find_element(By.XPATH,'//*[@id="root"]/div/div[2]/div/div[2]/div/div[2]/button[1]').click()
-    row= row + 1
+    time.sleep(5)
+    print(f'{row} - {df["MID"][row]} - {df["RT ID"][row]}')
+    row = row + 1
+    df.to_csv("C:\\Users\\Anuja\\Desktop\\CMS Automation\\output.csv")
 print(df)
-df.to_csv("C:\\Users\\Anuja\\Desktop\\CMS Automation\\output.csv")
