@@ -17,7 +17,7 @@ driver.switch_to.new_window('tab')
 # Load the webpage
 driver.get("https://tutor-plus-cms.tllms.com/neo_courses")
 driver.find_element(By.XPATH,'//*[@id="root"]/div/div/a/span[1]').click()
-email = input("Enter your email ID: ")
+email = "pratik.sondkar@byjus.com"
 driver.find_element(By.ID, 'email').send_keys(email)
 driver.find_element(By.XPATH, '//*[@id="signInForm"]/div[3]/button').click()
 driver.find_element(By.XPATH,'//*[@id="identifierId"]').send_keys(email)
