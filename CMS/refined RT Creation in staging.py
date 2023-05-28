@@ -94,4 +94,3 @@ while row < len(df):
     print(f'{row} - {df["MID"][row]} - {df["RT ID"][row]}')
     row = row + 1
     df.to_csv("C:\\Users\\Anuja\\Desktop\\CMS Automation\\output.csv")
-print(df)
