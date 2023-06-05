@@ -1,6 +1,6 @@
 import pandas as pd
 from selenium import webdriver
-from selenium.common import TimeoutException
+from selenium.common import TimeoutException, ElementNotInteractableException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -63,10 +63,18 @@ while row < len(df):
             break
 
     # Chapter Addition
-    if df['Class Type'][row] == 'Regular Session':
-        chap_loc = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR,'input[placeholder="Enter Chapter"]'))).send_keys(df['Chapter Name'][row])
-    elif df['Class Type'][row] == 'Monthly Test Session':
-        pass
+    try:
+
+        if df['Class Type'][row] == 'Regular Session':
+            chap_loc = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR,'input[placeholder="Enter Chapter"]')))
+            if chap_loc.is_displayed():
+                chap_loc.send_keys(df['Chapter Name'][row])
+        elif df['Class Type'][row] == 'Monthly Test Session':
+            pass
+
+    except ElementNotInteractableException:
+        print(f'{row + 2} - {df["MID"][row]} - Chapter addition fail, Try again')
+        continue
 
     #Grade Addition
 
