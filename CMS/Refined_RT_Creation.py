@@ -5,27 +5,29 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+import time
 
+start_time = time.time()
 # Initialize the WebDriver
-service_obj = Service("C:\\Users\\Anuja\\Desktop\\python automation\\chromedriver.exe")
+service_obj = Service("C:\\Users\\Anuja\\Desktop\\CMS Automation\\chromedriver.exe")
 driver = webdriver.Chrome(service=service_obj)
 wait = WebDriverWait(driver, 20, poll_frequency=2, ignored_exceptions=[Exception])
 driver.maximize_window()
 
 # Database
-df = pd.read_csv("C:\\Users\\Anuja\\Downloads\\RT Data.csv")
+df = pd.read_csv("C:\\Users\\Anuja\\Downloads\\RT - Sheet1.csv")
 
 # Login to CMS
 driver.switch_to.new_window('tab')
 # Load the webpage
 driver.get("https://tutor-plus-cms.tllms.com/neo_courses")
 wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="root"]/div/div/a/span[1]'))).click()
-email = input("Enter Your Email-ID: ")
+email = 'pratik.sondkar@byjus.com'
 wait.until(EC.presence_of_element_located((By.ID, 'email'))).send_keys(email)
 wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="signInForm"]/div[3]/button'))).click()
 wait.until(EC.presence_of_element_located((By.XPATH,'//*[@id="identifierId"]'))).send_keys(email)
 wait.until(EC.element_to_be_clickable((By.XPATH,'//*[@id="identifierNext"]/div/button/span'))).click()
-password = input("Enter Your Password: ")
+password = 'Pratik@7682'
 wait.until(EC.presence_of_element_located((By.XPATH,'//*[@id="password"]/div[1]/div/div[1]/input'))).send_keys(password)
 wait.until(EC.element_to_be_clickable((By.XPATH,'//*[@id="passwordNext"]/div/button/span'))).click()
 
@@ -33,7 +35,7 @@ wait.until(EC.element_to_be_clickable((By.XPATH,'//*[@id="passwordNext"]/div/but
 row = 0
 while row < len(df):
     # Clicking on raw topic
-    wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="root"]/div/div[1]/div[2]/div/div/ul/div[10]/div[1]'))).click()
+    wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="root"]/div/div[1]/div[2]/div/div/ul/div[11]/div[1]'))).click()
 
     # Clicking on Create new Topic
     wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="root"]/div/div[2]/div/div[1]/div/button'))).click()
@@ -63,18 +65,11 @@ while row < len(df):
             break
 
     # Chapter Addition
-    try:
+    if df['Class Type'][row] == 'Regular Session':
+        chap_loc = wait.until(EC.presence_of_element_located((By.XPATH,'//*[@id="root"]/div/div[2]/div[3]/div[1]/div[1]/div[5]/div/div/div/input'))).send_keys(df['Chapter Name'][row])
 
-        if df['Class Type'][row] == 'Regular Session':
-            chap_loc = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR,'input[placeholder="Enter Chapter"]')))
-            if chap_loc.is_displayed():
-                chap_loc.send_keys(df['Chapter Name'][row])
-        elif df['Class Type'][row] == 'Monthly Test Session':
-            pass
-
-    except ElementNotInteractableException:
-        print(f'{row + 2} - {df["MID"][row]} - Chapter addition fail, Try again')
-        continue
+    elif df['Class Type'][row] == 'Monthly Test Session':
+        pass
 
     #Grade Addition
 
@@ -112,3 +107,5 @@ while row < len(df):
         row = row + 1
         df.to_csv("C:\\Users\\Anuja\\Desktop\\CMS Automation\\output.csv")
         continue
+end_time = time.time()
+print(f"execution time for creation of {len(df)} RTs: {end_time-start_time}")
