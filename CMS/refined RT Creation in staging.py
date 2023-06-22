@@ -1,11 +1,12 @@
 import pandas as pd
-import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 
+start_time = time.time()
 # Initialize the WebDriver
 service_obj = Service("C:\\Users\\Anuja\\Desktop\\python automation\\chromedriver.exe")
 driver = webdriver.Chrome(service=service_obj)
@@ -13,7 +14,7 @@ wait = WebDriverWait(driver, 30, poll_frequency=2, ignored_exceptions=[Exception
 driver.maximize_window()
 
 # Database
-df = pd.read_csv("C:\\Users\\Anuja\\Downloads\\RT Data.csv").copy()
+df = pd.read_csv("C:\\Users\\Anuja\\Downloads\\RT - Sheet1.csv")
 
 # Login to CMS
 driver.switch_to.new_window('tab')
@@ -54,7 +55,7 @@ while row < len(df):
     # Selecting Subject:
 
     subject_click = wait.until(EC.element_to_be_clickable((By.XPATH,'//*[@id="root"]/div/div[2]/div[3]/div[1]/div[1]/div[4]/div/div/div/div/div'))).click()
-    subject = wait.until(EC.presence_of_all_elements_located((By.XPATH,'//*[@id="menu-"]/div[3]/ul//li')))
+    subject = wait.until(EC.element_to_be_clickable((By.XPATH,'//*[@id="menu-"]/div[3]/ul//li'))).find_elements(By.XPATH,'//*[@id="menu-"]/div[3]/ul//li')
     for li in subject:
         if li.text == df['Subject'][row]:
             li.click()
@@ -94,3 +95,5 @@ while row < len(df):
     print(f'{row} - {df["MID"][row]} - {df["RT ID"][row]}')
     row = row + 1
     df.to_csv("C:\\Users\\Anuja\\Desktop\\CMS Automation\\output.csv")
+end_time = time.time()
+print(f"execution time for creation of {len(df)} RTs: {end_time-start_time}")
